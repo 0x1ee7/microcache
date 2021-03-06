@@ -50,8 +50,9 @@ func TestCacheHandlerNotAllowed(t *testing.T) {
 func TestCacheHandlerSuccess(t *testing.T) {
 
 	handler := NewCacheHandler()
+	data := "test value"
 
-	reqPost, _ := http.NewRequest("POST", "/test", strings.NewReader("body"))
+	reqPost, _ := http.NewRequest("POST", "/test", strings.NewReader(data))
 	recPost := httptest.NewRecorder()
 	handler.ServeHTTP(recPost, reqPost)
 	if status := recPost.Code; status != http.StatusCreated {
@@ -65,5 +66,10 @@ func TestCacheHandlerSuccess(t *testing.T) {
 	if status := recGet.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
+	}
+
+	if body := recGet.Body.String(); body != data {
+		t.Errorf("handler returned wrong data: got %v want %v",
+			body, data)
 	}
 }
