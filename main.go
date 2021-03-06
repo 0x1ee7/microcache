@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	http.HandleFunc("/", cachehttp.CacheHandler)
-	http.ListenAndServe(":8080", nil)
+	handler := cachehttp.CacheHandler{}
+	http.ListenAndServe(":8080", handler)
 }
