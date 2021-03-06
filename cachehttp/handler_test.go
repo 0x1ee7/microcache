@@ -3,11 +3,12 @@ package cachehttp
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
 func TestCacheHandlerEmptyKey(t *testing.T) {
-	handler := CacheHandler{}
+	handler := NewCacheHandler()
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	rec := httptest.NewRecorder()
@@ -19,7 +20,7 @@ func TestCacheHandlerEmptyKey(t *testing.T) {
 			status, http.StatusBadRequest)
 	}
 
-	expected := "Empty key not allowed\n"
+	expected := "Key cannot be empty\n"
 	if rec.Body.String() != expected {
 		t.Errorf("handler returned unexpected body: got %v want %v",
 			rec.Body.String(), expected)
@@ -27,7 +28,7 @@ func TestCacheHandlerEmptyKey(t *testing.T) {
 }
 
 func TestCacheHandlerNotAllowed(t *testing.T) {
-	handler := CacheHandler{}
+	handler := NewCacheHandler()
 
 	req, _ := http.NewRequest("PUT", "/test", nil)
 	rec := httptest.NewRecorder()
@@ -48,14 +49,14 @@ func TestCacheHandlerNotAllowed(t *testing.T) {
 
 func TestCacheHandlerSuccess(t *testing.T) {
 
-	handler := CacheHandler{}
+	handler := NewCacheHandler()
 
-	reqPost, _ := http.NewRequest("POST", "/test", nil)
+	reqPost, _ := http.NewRequest("POST", "/test", strings.NewReader("body"))
 	recPost := httptest.NewRecorder()
 	handler.ServeHTTP(recPost, reqPost)
-	if status := recPost.Code; status != http.StatusOK {
+	if status := recPost.Code; status != http.StatusCreated {
 		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
+			status, http.StatusCreated)
 	}
 
 	reqGet, _ := http.NewRequest("GET", "/test", nil)
