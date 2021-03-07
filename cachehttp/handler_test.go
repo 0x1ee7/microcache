@@ -5,10 +5,11 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestCacheHandlerEmptyKey(t *testing.T) {
-	handler := NewCacheHandler()
+	handler := NewCacheHandler(10 * time.Second)
 
 	req, _ := http.NewRequest("GET", "/", nil)
 	rec := httptest.NewRecorder()
@@ -28,7 +29,7 @@ func TestCacheHandlerEmptyKey(t *testing.T) {
 }
 
 func TestCacheHandlerNotAllowed(t *testing.T) {
-	handler := NewCacheHandler()
+	handler := NewCacheHandler(10 * time.Second)
 
 	req, _ := http.NewRequest("PUT", "/test", nil)
 	rec := httptest.NewRecorder()
@@ -49,7 +50,7 @@ func TestCacheHandlerNotAllowed(t *testing.T) {
 
 func TestCacheHandlerSuccess(t *testing.T) {
 
-	handler := NewCacheHandler()
+	handler := NewCacheHandler(10 * time.Second)
 	data := "test value"
 
 	reqPost, _ := http.NewRequest("POST", "/test", strings.NewReader(data))
