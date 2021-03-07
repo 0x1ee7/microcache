@@ -19,7 +19,8 @@ var httpAddr = flag.String("http", defaultAddr, "HTTP service address")
 var ttl = flag.Duration("ttl", defaultTTL, "Cache TTL 30m, 1h etc.")
 
 func usage() {
-	fmt.Fprintf(os.Stderr, "usage: microcache -http="+defaultAddr+"\n")
+	fmt.Fprintf(os.Stderr, "usage: microcache -http=%v -ttl=%v\n", defaultAddr, ttl)
+	fmt.Fprintf(os.Stderr, "env: CACHE_TTL overrides -ttl\n")
 	flag.PrintDefaults()
 	os.Exit(2)
 }
