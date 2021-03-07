@@ -5,18 +5,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/0x1EE7/microcache/memcache"
 )
 
-// CacheHandler holds a reference cache and hadnles http requests
+// CacheHandler holds a reference cache and hadnles http requests.
 type CacheHandler struct {
 	cache *memcache.MemCache
 }
 
-//NewCacheHandler constructs a CacheHandler objects initialized with memcache
-func NewCacheHandler() CacheHandler {
-	memcache := memcache.NewMemCache()
+//NewCacheHandler constructs a CacheHandler object initialized with memcache.
+func NewCacheHandler(ttl time.Duration) CacheHandler {
+	memcache := memcache.NewMemCache(ttl)
 	handler := CacheHandler{memcache}
 	return handler
 }
