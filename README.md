@@ -16,6 +16,13 @@ To install from source, just run:
 go get -u github.com/0x1EE7/microcache
 ```
 
+## Tests
+Run tests with `go test ./...` or:
+```
+$ go test -cover ./cachehttp ./memcache
+ok      github.com/0x1EE7/microcache/cachehttp  (cached)        coverage: 71.4% of statements
+ok      github.com/0x1EE7/microcache/memcache   (cached)        coverage: 95.0% of statements
+```
 ## Features
 
 - Timeouts are handled over a single channel.
