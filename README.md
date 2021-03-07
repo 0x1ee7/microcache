@@ -4,8 +4,8 @@ HTTP memory cache with a simple interface and configurable TTL.
 [![GoDoc](https://godoc.org/github.com/0x1EE7/microcache/acme?status.svg)](https://godoc.org/github.com/0x1EE7/microcache)
 
 ## Interface
-- HTTP POST /<key> with the value as UTF-8 body.
-- HTTP GET /<key> replies with the value as body or 404 if no such key exists.
+- HTTP POST `/<key>` with the value as UTF-8 body.
+- HTTP GET `/<key>` replies with the value as body or 404 if no such key exists.
 
 
 ## Installation
