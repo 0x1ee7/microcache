@@ -8,7 +8,7 @@ import (
 func TestMemCache_Get(t *testing.T) {
 	cache := NewMemCache(10 * time.Second)
 	cacheWithValue := NewMemCache(10 * time.Second)
-	cacheWithValue.Set("valid-key", "VALID data μ")
+	_ = cacheWithValue.Set("valid-key", "VALID data μ")
 	type args struct {
 		key string
 	}
@@ -87,7 +87,6 @@ func TestMemCache_handleTimeouts(t *testing.T) {
 					t.Errorf("MemCache.Set() error = %v, wantErr %v", err, tt.wantErr)
 				}
 			} else {
-
 				got, err := cache.Get(key)
 				if (err != nil) != tt.wantErr {
 					t.Errorf("MemCache.Get() error = %v, wantErr %v", err, tt.wantErr)
