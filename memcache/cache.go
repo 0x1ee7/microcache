@@ -5,17 +5,14 @@ import (
 	"time"
 )
 
-var ErrorNotFound = errors.New("not found")
-var ErrorMisingValue = errors.New("missing value")
-var ErrorNotModified = errors.New("not modified")
-
-// MemCache ...
+// MemCache represents cache.
 type MemCache struct {
 	hashmap map[string]string
 	channel chan string
 }
 
-// NewMemCache ...
+// NewMemCache constructs a cache object.
+// Starts a goroutine to handle timeout events.
 func NewMemCache() *MemCache {
 	hashmap := make(map[string]string)
 	channel := make(chan string)
@@ -24,7 +21,16 @@ func NewMemCache() *MemCache {
 	return &cache
 }
 
-// Get ...
+// ErrorNotFound is returned when the key is not found the thehashmap
+// ErrorMisingValue is returned when the value is empty
+// ErrorNotModified is returned when the key is alre
+var (
+	ErrorNotFound    = errors.New("not found")
+	ErrorMisingValue = errors.New("missing value")
+	ErrorNotModified = errors.New("not modified")
+)
+
+// Get returns the value from the cache for a given key.
 func (m *MemCache) Get(key string) (string, error) {
 
 	if value, found := m.hashmap[key]; found {
@@ -33,20 +39,22 @@ func (m *MemCache) Get(key string) (string, error) {
 	return "", ErrorNotFound
 }
 
-// Set ...
+// Set saves the value to the cache for a given key. Also starts a goroutine to
+// keep track of cache timeout if save is a success. Returns ErrorNotModified if
+// cache already has a value for the key
 func (m *MemCache) Set(key string, value string) error {
 	if value == "" {
 		return ErrorMisingValue
 	}
-	if _, exist := m.hashmap[key]; exist {
+	if _, found := m.hashmap[key]; found {
 		return ErrorNotModified
 	}
 
+	m.hashmap[key] = value
 	go func() {
 		<-time.After(5 * time.Second)
 		m.channel <- key
 	}()
-	m.hashmap[key] = value
 	return nil
 }
 

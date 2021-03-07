@@ -13,5 +13,5 @@ func main() {
 	logger := log.New(os.Stdout, "", log.LstdFlags)
 	handler := cachehttp.NewCacheHandler()
 	logger.Println("Server is starting...")
-	log.Fatal(http.ListenAndServe(":8080", logging.LoggingHandler(logger)(handler)))
+	log.Fatal(http.ListenAndServe(":8080", logging.Handler(logger)(handler)))
 }

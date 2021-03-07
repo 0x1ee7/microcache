@@ -14,7 +14,9 @@ func (r *statusRecorder) WriteHeader(status int) {
 	r.Status = status
 	r.ResponseWriter.WriteHeader(status)
 }
-func LoggingHandler(logger *log.Logger) func(http.Handler) http.Handler {
+
+// Handler wraps other handler to enable logging.
+func Handler(logger *log.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			rec := &statusRecorder{
