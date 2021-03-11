@@ -2,6 +2,7 @@ package memcache
 
 import (
 	"errors"
+	"sync"
 	"time"
 )
 
@@ -10,6 +11,7 @@ type MemCache struct {
 	hashmap map[string]string
 	ttl     time.Duration
 	channel chan string
+	mu      sync.RWMutex
 }
 
 // NewMemCache constructs a cache object.
@@ -17,7 +19,7 @@ type MemCache struct {
 func NewMemCache(ttl time.Duration) *MemCache {
 	hashmap := make(map[string]string)
 	channel := make(chan string)
-	cache := MemCache{hashmap, ttl, channel}
+	cache := MemCache{hashmap: hashmap, ttl: ttl, channel: channel}
 	go cache.handleTimeouts(channel)
 	return &cache
 }
@@ -33,7 +35,8 @@ var ErrorNotModified = errors.New("not modified")
 
 // Get returns the value from the cache for a given key.
 func (m *MemCache) Get(key string) (string, error) {
-
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	if value, found := m.hashmap[key]; found {
 		return value, nil
 	}
@@ -50,8 +53,9 @@ func (m *MemCache) Set(key string, value string) error {
 	if _, found := m.hashmap[key]; found {
 		return ErrorNotModified
 	}
-
+	m.mu.Lock()
 	m.hashmap[key] = value
+	m.mu.Unlock()
 	go func() {
 		<-time.After(m.ttl)
 		m.channel <- key
@@ -62,6 +66,8 @@ func (m *MemCache) Set(key string, value string) error {
 func (m *MemCache) handleTimeouts(channel chan string) {
 	for {
 		key := <-channel
+		m.mu.Lock()
 		delete(m.hashmap, key)
+		m.mu.Unlock()
 	}
 }
