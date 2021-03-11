@@ -50,7 +50,7 @@ func (m *MemCache) Set(key string, value string) error {
 	if value == "" {
 		return ErrorMisingValue
 	}
-	if _, found := m.hashmap[key]; found {
+	if _, err := m.Get(key); err == nil {
 		return ErrorNotModified
 	}
 	m.mu.Lock()
