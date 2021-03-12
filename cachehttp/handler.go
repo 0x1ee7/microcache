@@ -52,11 +52,6 @@ func (h CacheHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		if errors.Is(err, memcache.ErrorNotModified) {
-			w.WriteHeader(http.StatusOK)
-			return
-		}
-
 		w.Header().Add("Location", fmt.Sprintf("/%s", key))
 		w.WriteHeader(http.StatusCreated)
 		fmt.Fprint(w)

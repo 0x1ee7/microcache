@@ -50,7 +50,7 @@ func TestMemCache_Set(t *testing.T) {
 		wantErr bool
 	}{
 		{"Set new key", cache, args{"newkey", "data"}, false},
-		{"Set existing key", cache, args{"newkey", "data"}, true},
+		{"Set existing key", cache, args{"newkey", "data"}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
